@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Iztriiiii
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        string ipAddress = null;
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            IPAddress[] ipLocal = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress iP in ipLocal)
+            {
+                ipAddress = iP.ToString();
+            }
+        }
+
+        TcpClient clientSocket = new TcpClient();
+        NetworkStream serverStream = default(NetworkStream);
+        string readData = null;
+
+        private void ConnectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            readData = "Conected to Chat Server ...";
+
+            msg();
+            clientSocket.Connect(ipAddress, 27271);
+            serverStream = clientSocket.GetStream();
+
+            Thread ctThread = new Thread(getMessage);
+            ctThread.Start();
+        }
+
+        private void getMessage()
+        {
+            while (true)
+            {
+                serverStream = clientSocket.GetStream();
+                byte[] inStream = new byte[10025];
+                serverStream.Read(inStream, 0, inStream.Length);
+                string returndata = Encoding.ASCII.GetString(inStream);
+                readData = "" + returndata;
+
+                msg();
+            }
+        }
+
+        private void msg()
+        {
+            if (!Dispatcher.CheckAccess())
+                Dispatcher.Invoke(new MethodInvoker(msg));
+            else
+                Board.Text = Board.Text + Environment.NewLine + " >> " + readData;
+        }
+
+        private void SendBtn_Click(object sender, RoutedEventArgs e)
+        { 
+            byte[] outStream = Encoding.ASCII.GetBytes(MessageSend.Text);
+            serverStream.Write(outStream, 0, outStream.Length);
+            serverStream.Flush();
+        }
+    }
+}
