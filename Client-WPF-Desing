@@ -1,0 +1,9 @@
+
+        Title="MainWindow" Height="450" Width="450">
+    <Grid>
+        <TextBox x:Name="MessageSend" HorizontalAlignment="Left" Height="32" Margin="10,379,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="327"/>
+        <Button x:Name="SendBtn" Content="Send" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="91" Height="32" Click="SendBtn_Click"/>
+        <Button x:Name="ConnectBtn" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="423" Height="28" Click="ConnectBtn_Click"/>
+        <TextBox Name="Board" HorizontalAlignment="Left" Height="324" Margin="10,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="423"/>
+    </Grid>
+
